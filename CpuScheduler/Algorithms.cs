@@ -422,6 +422,21 @@ namespace CpuScheduler
 
         // TODO: Add new scheduling algorithms below. Use the above methods as
         // examples when expanding functionality.
+
+        public static void RunLotteryScheduling(string processCountInput)
+        {
+            if (!int.TryParse(processCountInput, out int processCount) || processCount <= 0)
+            {
+                MessageBox.Show("Invalid number of processes", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            double[] burstTimes = new double[processCount];
+            double[] waitingTimes = new double[processCount];
+            double[] sortedBurstTimes = new double[processCount];
+            double totalWaitingTime = 0.0;
+            double averageWaitingTime;
+            int totalTickets = 0;
+        }
     }
 }
 

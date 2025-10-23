@@ -4,6 +4,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace CpuScheduler
@@ -224,6 +225,9 @@ Instructions:
             public int BurstTime { get; set; }
             public int Priority { get; set; }
             public int ArrivalTime { get; set; }
+            public int WaitTime { get; set; }
+            public int InterruptTime { get; set; }
+            public bool Interrupted { get; set; } = false;
         }
 
         /// <summary>
@@ -460,6 +464,73 @@ Instructions:
             }
             
             return processResults.Values.OrderBy(r => r.StartTime).ToList();
+        }
+        private List<SchedulingResult> RunSRTFAlgorithm(List<ProcessData> processes)
+        {
+            var results = new List<SchedulingResult>();
+            var currentTime = 0;
+            var remainingProcesses = processes.ToList();
+
+            while (remainingProcesses.Count > 0)
+            {
+                // Get processes that have arrived by current time
+                var availableProcesses = remainingProcesses.Where(p => p.ArrivalTime <= currentTime).ToList();
+                var arraivalOrder = remainingProcesses.OrderBy(p=>p.ArrivalTime).ToList();
+
+                if (availableProcesses.Count == 0)
+                {
+                    // No process has arrived yet, jump to next arrival time
+                    currentTime = remainingProcesses.Min(p => p.ArrivalTime);
+                    continue;
+                }
+
+                // Select process with shortest burst time
+                var nextProcess = availableProcesses.OrderBy(p => p.BurstTime).ThenBy(p => p.ArrivalTime).First();
+                var startTime = Math.Max(currentTime, nextProcess.ArrivalTime);
+                var finishTime = startTime + nextProcess.BurstTime;
+                if (remainingProcesses.Count > 2)
+                {
+                    var processAfter = arraivalOrder.OrderBy(p => p.BurstTime).ThenBy(p => p.ArrivalTime).ElementAt(1);
+                    if (finishTime > processAfter.ArrivalTime && processAfter.BurstTime < finishTime - processAfter.ArrivalTime)
+                    {
+                        remainingProcesses.Remove(nextProcess);
+                        nextProcess.BurstTime = finishTime - processAfter.ArrivalTime;
+                        nextProcess.Interrupted = true;
+                        nextProcess.InterruptTime = processAfter.ArrivalTime;
+                        nextProcess.WaitTime = startTime - nextProcess.ArrivalTime;
+                        remainingProcesses.Add(nextProcess);
+                        currentTime = processAfter.ArrivalTime;
+                        continue;
+                    }
+                }
+                var waitingTime = 0;
+                if (!nextProcess.Interrupted)
+                {
+                    waitingTime = startTime - nextProcess.ArrivalTime;
+                }
+                else
+                {
+                    waitingTime = nextProcess.WaitTime + startTime - nextProcess.InterruptTime;
+                }
+                var turnaroundTime = finishTime - nextProcess.ArrivalTime;
+                
+                
+                results.Add(new SchedulingResult
+                    {
+                        ProcessID = nextProcess.ProcessID,
+                        ArrivalTime = nextProcess.ArrivalTime,
+                        BurstTime = nextProcess.BurstTime,
+                        StartTime = startTime,
+                        FinishTime = finishTime,
+                        WaitingTime = waitingTime,
+                        TurnaroundTime = turnaroundTime
+                    });
+
+                currentTime = finishTime;
+                remainingProcesses.Remove(nextProcess);
+            }
+
+            return results.OrderBy(r => r.StartTime).ToList();
         }
 
         /// <summary>
@@ -930,6 +1001,56 @@ Instructions:
             }
         }
 
+        private void SRTF_Click(object sender, EventArgs e)
+        {
+            var processData = GetProcessDataFromGrid();
+            if (processData.Count > 0)
+            {
+                // STUDENTS: Updated implementation using DataGrid data
+                var results = RunSRTFAlgorithm(processData);
+
+                // Update Results tab with detailed scheduling results
+                DisplaySchedulingResults(results, "SRFT Scheduling (Shorter Burst Time First with dynamic process changing)");
+
+                // Switch to Results panel and update sidebar
+                ShowPanel(resultsPanel);
+                sidePanel.Height = btnDashBoard.Height;
+                sidePanel.Top = btnDashBoard.Top;
+            }
+            else
+            {
+                MessageBox.Show("Please set process count and ensure the data grid has process data.",
+                    "No Process Data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtProcess.Focus();
+            }
+        }
+
+        private void Lottery_Click(object sender, EventArgs e)
+        {
+            var processData = GetProcessDataFromGrid();
+            if (processData.Count > 0)
+            {
+                // STUDENTS: Updated implementation using DataGrid data
+                var results = RunPriorityAlgorithm(processData);
+
+                // Update Results tab with detailed scheduling results
+                DisplaySchedulingResults(results, "Priority Scheduling (Higher # = Higher Priority)");
+
+                // Switch to Results panel and update sidebar
+                ShowPanel(resultsPanel);
+                sidePanel.Height = btnDashBoard.Height;
+                sidePanel.Top = btnDashBoard.Top;
+            }
+            else
+            {
+                MessageBox.Show("Please set process count and ensure the data grid has process data.",
+                    "No Process Data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtProcess.Focus();
+            }
+
+        }
+
+
         /// <summary>
         /// Occurs when the process count text changes.
         /// </summary>
@@ -1005,6 +1126,8 @@ Instructions:
             ApplyRoundedCorners(btnSJF);
             ApplyRoundedCorners(btnPriority);
             ApplyRoundedCorners(btnRoundRobin);
+            ApplyRoundedCorners(btnSRTF);
+            ApplyRoundedCorners(btnLottery);
             ApplyRoundedCorners(btnDarkModeToggle);
             
             // Apply default dark theme
