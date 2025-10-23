@@ -475,7 +475,7 @@ Instructions:
             {
                 // Get processes that have arrived by current time
                 var availableProcesses = remainingProcesses.Where(p => p.ArrivalTime <= currentTime).ToList();
-                var arraivalOrder = remainingProcesses.OrderBy(p=>p.ArrivalTime).ToList();
+                var arrivalOrder = remainingProcesses.OrderBy(p=>p.ArrivalTime).ToList();
 
                 if (availableProcesses.Count == 0)
                 {
@@ -490,7 +490,7 @@ Instructions:
                 var finishTime = startTime + nextProcess.BurstTime;
                 if (remainingProcesses.Count > 2)
                 {
-                    var processAfter = arraivalOrder.OrderBy(p => p.BurstTime).ThenBy(p => p.ArrivalTime).ElementAt(1);
+                    var processAfter = arrivalOrder.OrderBy(p => p.BurstTime).ThenBy(p => p.ArrivalTime).ElementAt(1);
                     if (finishTime > processAfter.ArrivalTime && processAfter.BurstTime < finishTime - processAfter.ArrivalTime)
                     {
                         remainingProcesses.Remove(nextProcess);
@@ -1249,6 +1249,8 @@ Instructions:
             ApplyDarkThemeToSchedulerButton(btnSJF);
             ApplyDarkThemeToSchedulerButton(btnPriority);
             ApplyDarkThemeToSchedulerButton(btnRoundRobin);
+            ApplyDarkThemeToSchedulerButton(btnSRTF);
+            ApplyDarkThemeToSchedulerButton(btnLottery);
         }
 
         /// <summary>
@@ -1323,12 +1325,16 @@ Instructions:
             btnSJF.BackColor = Color.AntiqueWhite;
             btnPriority.BackColor = Color.Bisque;
             btnRoundRobin.BackColor = Color.PapayaWhip;
+            btnSRTF.BackColor = Color.PapayaWhip;
+            btnLottery.BackColor = Color.PapayaWhip;
             
             // Reset text color for algorithm buttons
             btnFCFS.ForeColor = SystemColors.ControlText;
             btnSJF.ForeColor = SystemColors.ControlText;
             btnPriority.ForeColor = SystemColors.ControlText;
             btnRoundRobin.ForeColor = SystemColors.ControlText;
+            btnSRTF.ForeColor = SystemColors.ControlText;
+            btnLottery.ForeColor = SystemColors.ControlText;
         }
 
         /// <summary>

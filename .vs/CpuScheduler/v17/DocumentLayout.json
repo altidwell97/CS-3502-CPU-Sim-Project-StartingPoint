@@ -11,10 +11,6 @@
       "RelativeMoniker": "D:0:0:{6954F540-2148-4D2F-879A-BE82576B1083}|CpuScheduler\\CpuScheduler.csproj|solutionrelative:cpuscheduler\\cpuschedulerform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6954F540-2148-4D2F-879A-BE82576B1083}|CpuScheduler\\CpuScheduler.csproj|c:\\users\\atidw\\source\\repos\\cs-3502-cpu-sim-project-startingpoint\\cpuscheduler\\cpuschedulerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{6954F540-2148-4D2F-879A-BE82576B1083}|CpuScheduler\\CpuScheduler.csproj|solutionrelative:cpuscheduler\\cpuschedulerform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{6954F540-2148-4D2F-879A-BE82576B1083}|CpuScheduler\\CpuScheduler.csproj|c:\\users\\atidw\\source\\repos\\cs-3502-cpu-sim-project-startingpoint\\cpuscheduler\\algorithms.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6954F540-2148-4D2F-879A-BE82576B1083}|CpuScheduler\\CpuScheduler.csproj|solutionrelative:cpuscheduler\\algorithms.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -46,16 +42,16 @@
               "Title": "CpuSchedulerForm.cs",
               "DocumentMoniker": "C:\\Users\\atidw\\source\\repos\\CS-3502-CPU-Sim-Project-StartingPoint\\CpuScheduler\\CpuSchedulerForm.cs",
               "RelativeDocumentMoniker": "CpuScheduler\\CpuSchedulerForm.cs",
-              "ToolTip": "C:\\Users\\atidw\\source\\repos\\CS-3502-CPU-Sim-Project-StartingPoint\\CpuScheduler\\CpuSchedulerForm.cs*",
-              "RelativeToolTip": "CpuScheduler\\CpuSchedulerForm.cs*",
-              "ViewState": "AgIAAOEBAAAAAAAAAAAwwPgBAAARAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\atidw\\source\\repos\\CS-3502-CPU-Sim-Project-StartingPoint\\CpuScheduler\\CpuSchedulerForm.cs",
+              "RelativeToolTip": "CpuScheduler\\CpuSchedulerForm.cs",
+              "ViewState": "AgIAAAQCAAAAAAAAAAArwOgBAABPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-19T23:28:31.756Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "Algorithms.cs",
               "DocumentMoniker": "C:\\Users\\atidw\\source\\repos\\CS-3502-CPU-Sim-Project-StartingPoint\\CpuScheduler\\Algorithms.cs",
               "RelativeDocumentMoniker": "CpuScheduler\\Algorithms.cs",
@@ -74,28 +70,10 @@
               "RelativeDocumentMoniker": "CpuScheduler\\CpuSchedulerForm.Designer.cs",
               "ToolTip": "C:\\Users\\atidw\\source\\repos\\CS-3502-CPU-Sim-Project-StartingPoint\\CpuScheduler\\CpuSchedulerForm.Designer.cs",
               "RelativeToolTip": "CpuScheduler\\CpuSchedulerForm.Designer.cs",
-              "ViewState": "AgIAABoBAAAAAAAAAAAowEQCAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAKEBAAAAAAAAAAAowLUBAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-23T02:59:14.052Z",
               "EditorCaption": ""
-            }
-          ]
-        },
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CpuSchedulerForm.cs [Design]",
-              "DocumentMoniker": "C:\\Users\\atidw\\source\\repos\\CS-3502-CPU-Sim-Project-StartingPoint\\CpuScheduler\\CpuSchedulerForm.cs",
-              "RelativeDocumentMoniker": "CpuScheduler\\CpuSchedulerForm.cs",
-              "ToolTip": "C:\\Users\\atidw\\source\\repos\\CS-3502-CPU-Sim-Project-StartingPoint\\CpuScheduler\\CpuSchedulerForm.cs [Design]*",
-              "RelativeToolTip": "CpuScheduler\\CpuSchedulerForm.cs [Design]*",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-23T04:25:41.484Z",
-              "EditorCaption": " [Design]"
             }
           ]
         }
