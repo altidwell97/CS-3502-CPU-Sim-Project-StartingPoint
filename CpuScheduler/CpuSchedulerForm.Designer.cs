@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data;
+using System.Windows.Forms;
 
 namespace CpuScheduler
 {
@@ -67,6 +69,7 @@ namespace CpuScheduler
             aboutPanel = new System.Windows.Forms.Panel();
             aboutTextBox = new System.Windows.Forms.RichTextBox();
             timer1 = new System.Windows.Forms.Timer(components);
+            saveResults = new System.Windows.Forms.Button();
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             contentPanel.SuspendLayout();
@@ -512,6 +515,23 @@ namespace CpuScheduler
             resultsPanel.Padding = new System.Windows.Forms.Padding(10);
             resultsPanel.Size = new System.Drawing.Size(728, 600);
             resultsPanel.TabIndex = 0;
+            resultsPanel.Controls.Add(saveResults);
+            //
+            // saveResults
+            //
+            saveResults.BackColor = System.Drawing.Color.PapayaWhip;
+            saveResults.Cursor = System.Windows.Forms.Cursors.Hand;
+            saveResults.FlatAppearance.MouseOverBackColor = System.Drawing.Color.PaleGreen;
+            saveResults.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            saveResults.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            saveResults.Location = new System.Drawing.Point(170, 65);
+            saveResults.Margin = new System.Windows.Forms.Padding(10, 5, 10, 5);
+            saveResults.Name = "saveResults";
+            saveResults.Size = new System.Drawing.Size(140, 50);
+            saveResults.TabIndex = 12;
+            saveResults.Text = "Save Results";
+            saveResults.UseVisualStyleBackColor = false;
+            saveResults.Click += SaveResults_Click;
             // 
             // listView1
             // 
@@ -615,5 +635,6 @@ namespace CpuScheduler
         private System.Windows.Forms.ComboBox cmbLoadExample;
         private System.Windows.Forms.FlowLayoutPanel algorithmButtonPanel;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Button saveResults;
     }
 }

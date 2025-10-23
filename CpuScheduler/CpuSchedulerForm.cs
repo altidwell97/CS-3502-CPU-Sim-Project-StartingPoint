@@ -225,7 +225,6 @@ Instructions:
             public int BurstTime { get; set; }
             public int Priority { get; set; }
             public int ArrivalTime { get; set; }
-            public int WaitTime { get; set; }
             public int InterruptTime { get; set; }
             public bool Interrupted { get; set; } = false;
         }
@@ -470,6 +469,7 @@ Instructions:
             var results = new List<SchedulingResult>();
             var currentTime = 0;
             var remainingProcesses = processes.ToList();
+            int[] waitTimes = new int[processes.Count()]; 
 
             while (remainingProcesses.Count > 0)
             {
@@ -497,7 +497,7 @@ Instructions:
                         nextProcess.BurstTime = finishTime - processAfter.ArrivalTime;
                         nextProcess.Interrupted = true;
                         nextProcess.InterruptTime = processAfter.ArrivalTime;
-                        nextProcess.WaitTime = startTime - nextProcess.ArrivalTime;
+                        waitTimes[int.Parse(nextProcess.ProcessID.Substring(1)) - 1] = startTime - nextProcess.ArrivalTime;
                         remainingProcesses.Add(nextProcess);
                         currentTime = processAfter.ArrivalTime;
                         continue;
@@ -510,7 +510,7 @@ Instructions:
                 }
                 else
                 {
-                    waitingTime = nextProcess.WaitTime + startTime - nextProcess.InterruptTime;
+                    waitingTime = waitTimes[int.Parse(nextProcess.ProcessID.Substring(1)) - 1] + startTime - nextProcess.InterruptTime;
                 }
                 var turnaroundTime = finishTime - nextProcess.ArrivalTime;
                 
@@ -528,9 +528,91 @@ Instructions:
 
                 currentTime = finishTime;
                 remainingProcesses.Remove(nextProcess);
+                arrivalOrder.Remove(nextProcess);
             }
 
             return results.OrderBy(r => r.StartTime).ToList();
+        }
+
+        private List<SchedulingResult> RunLotteryAlgorithm(List<ProcessData> processes, List<string> lotteryTickets)
+        {
+            List<string>remainingTickets = lotteryTickets;
+            var results = new List<SchedulingResult>();
+            var currentTime = 0;
+            var remainingProcesses = processes.ToList();
+
+            while (remainingProcesses.Count > 0)
+            {
+                // Get processes that have arrived by current time
+                var availableProcesses = remainingProcesses.Where(p => p.ArrivalTime <= currentTime).ToList();
+                Random random = new Random();
+                int ticketsLeft = lotteryTickets.Count();
+                if (availableProcesses.Count == 0)
+                {
+                    // No process has arrived yet, jump to next arrival time
+                    currentTime = remainingProcesses.Min(p => p.ArrivalTime);
+                    continue;
+                }
+                if (availableProcesses.Count == 1)
+                {
+                    var nextProcess = availableProcesses.First();
+                    var startTime = Math.Max(currentTime, nextProcess.ArrivalTime);
+                    var finishTime = startTime + nextProcess.BurstTime;
+                    var waitingTime = startTime - nextProcess.ArrivalTime;
+                    var turnaroundTime = finishTime - nextProcess.ArrivalTime;
+                    remainingTickets.RemoveAll(x => x == nextProcess.ProcessID.ToString());
+                    results.Add(new SchedulingResult
+                    {
+                        ProcessID = nextProcess.ProcessID,
+                        ArrivalTime = nextProcess.ArrivalTime,
+                        BurstTime = nextProcess.BurstTime,
+                        StartTime = startTime,
+                        FinishTime = finishTime,
+                        WaitingTime = waitingTime,
+                        TurnaroundTime = turnaroundTime
+                    });
+                    currentTime = finishTime;
+                    remainingProcesses.Remove(nextProcess);
+                }
+                else
+                {
+                    int ticketChosen = random.Next(0, ticketsLeft);
+                    bool processChosen = false;
+                    var nextProcess = availableProcesses[0];
+                    while (!processChosen)
+                    {
+                        for (int i = 0; i < availableProcesses.Count; i++)
+                        {
+                            if (remainingTickets.ElementAt(ticketChosen).Equals(availableProcesses[i].ProcessID.ToString()))
+                            {
+                                nextProcess = availableProcesses[i];
+                                processChosen = true;
+                                break;
+                            }
+                        }
+                        ticketChosen = random.Next(0, ticketsLeft);
+                    }
+                    var startTime = Math.Max(currentTime, nextProcess.ArrivalTime);
+                    var finishTime = startTime + nextProcess.BurstTime;
+                    var waitingTime = startTime - nextProcess.ArrivalTime;
+                    var turnaroundTime = finishTime - nextProcess.ArrivalTime;
+                    remainingTickets.RemoveAll(x => x == nextProcess.ProcessID.ToString());
+                    results.Add(new SchedulingResult
+                    {
+                        ProcessID = nextProcess.ProcessID,
+                        ArrivalTime = nextProcess.ArrivalTime,
+                        BurstTime = nextProcess.BurstTime,
+                        StartTime = startTime,
+                        FinishTime = finishTime,
+                        WaitingTime = waitingTime,
+                        TurnaroundTime = turnaroundTime
+                    });
+                    currentTime = finishTime;
+                    remainingProcesses.Remove(nextProcess);
+                }
+            }
+            return results.OrderBy(r => r.StartTime).ToList();
+
         }
 
         /// <summary>
@@ -582,6 +664,7 @@ Instructions:
             // Add summary statistics
             var avgWaiting = results.Average(r => r.WaitingTime);
             var avgTurnaround = results.Average(r => r.TurnaroundTime);
+
             
             var summaryItem = new ListViewItem("SUMMARY");
             summaryItem.SubItems.Add(algorithmName);
@@ -607,6 +690,42 @@ Instructions:
             // - Performance metrics summary for each algorithm tested
             // Reference the SaveData_Click() method above to learn CSV file handling
             // This will help you create tables/charts for your project report
+        }
+        private void SaveResults_Click(object sender, EventArgs e)
+        {
+            using (var saveDialog = new SaveFileDialog())
+            {
+                saveDialog.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
+                saveDialog.DefaultExt = "csv";
+                saveDialog.FileName = "ResultData.csv";
+                saveDialog.Title = "Save Process Data";
+
+                if (saveDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        using (var writer = new System.IO.StreamWriter(saveDialog.FileName))
+                        {
+                            // Write header
+                            writer.WriteLine("Process ID,Burst Time,Priority,Arrival Time");
+
+                            // Write data rows
+                            foreach (DataRow row in processTable.Rows)
+                            {
+                                writer.WriteLine($"{row["Process ID"]},{row["Burst Time"]},{row["Priority"]},{row["Arrival Time"]}");
+                            }
+                        }
+
+                        MessageBox.Show($"Process data saved successfully to:\n{saveDialog.FileName}",
+                            "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error saving file: {ex.Message}",
+                            "Save Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -1028,13 +1147,33 @@ Instructions:
         private void Lottery_Click(object sender, EventArgs e)
         {
             var processData = GetProcessDataFromGrid();
+            List<string> lotteryTickets = new List<string>();
             if (processData.Count > 0)
             {
+                for (int i = 0; i < processData.Count; i++)
+                {
+                    string lotteryInput = Microsoft.VisualBasic.Interaction.InputBox(
+                        "Enter lottery tickets for P"+ (i + 1) + " for Lottery scheduling:",
+                        "Lottery Tickets",
+                        "2");
+                    if (int.TryParse(lotteryInput, out int ticketAmount) && ticketAmount > 0)
+                    {
+                        for(int j = 0; j < ticketAmount; j++)
+                        {
+                            lotteryTickets.Add("P" + (i + 1));
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please enter a valid ticket amount (positive integer).",
+                            "Invalid Ticket Amount", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
                 // STUDENTS: Updated implementation using DataGrid data
-                var results = RunPriorityAlgorithm(processData);
+                var results = RunLotteryAlgorithm(processData, lotteryTickets);
 
                 // Update Results tab with detailed scheduling results
-                DisplaySchedulingResults(results, "Priority Scheduling (Higher # = Higher Priority)");
+                DisplaySchedulingResults(results, "Lottery Scheduling (Randomized based on lottery system)");
 
                 // Switch to Results panel and update sidebar
                 ShowPanel(resultsPanel);
@@ -1047,7 +1186,6 @@ Instructions:
                     "No Process Data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtProcess.Focus();
             }
-
         }
 
 
@@ -1129,6 +1267,7 @@ Instructions:
             ApplyRoundedCorners(btnSRTF);
             ApplyRoundedCorners(btnLottery);
             ApplyRoundedCorners(btnDarkModeToggle);
+            ApplyRoundedCorners(saveResults);
             
             // Apply default dark theme
             ApplyTheme();
@@ -1251,6 +1390,7 @@ Instructions:
             ApplyDarkThemeToSchedulerButton(btnRoundRobin);
             ApplyDarkThemeToSchedulerButton(btnSRTF);
             ApplyDarkThemeToSchedulerButton(btnLottery);
+            ApplyDarkThemeToSchedulerButton(saveResults);
         }
 
         /// <summary>
@@ -1327,7 +1467,8 @@ Instructions:
             btnRoundRobin.BackColor = Color.PapayaWhip;
             btnSRTF.BackColor = Color.PapayaWhip;
             btnLottery.BackColor = Color.PapayaWhip;
-            
+            saveResults.BackColor = Color.PapayaWhip;
+
             // Reset text color for algorithm buttons
             btnFCFS.ForeColor = SystemColors.ControlText;
             btnSJF.ForeColor = SystemColors.ControlText;
