@@ -9,10 +9,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{6954F540-2148-4D2F-879A-BE82576B1083}|CpuScheduler\\CpuScheduler.csproj|c:\\users\\atidw\\source\\repos\\cs-3502-cpu-sim-project-startingpoint\\cpuscheduler\\cpuschedulerform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6954F540-2148-4D2F-879A-BE82576B1083}|CpuScheduler\\CpuScheduler.csproj|solutionrelative:cpuscheduler\\cpuschedulerform.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6954F540-2148-4D2F-879A-BE82576B1083}|CpuScheduler\\CpuScheduler.csproj|c:\\users\\atidw\\source\\repos\\cs-3502-cpu-sim-project-startingpoint\\cpuscheduler\\algorithms.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6954F540-2148-4D2F-879A-BE82576B1083}|CpuScheduler\\CpuScheduler.csproj|solutionrelative:cpuscheduler\\algorithms.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -44,22 +40,9 @@
               "RelativeDocumentMoniker": "CpuScheduler\\CpuSchedulerForm.cs",
               "ToolTip": "C:\\Users\\atidw\\source\\repos\\CS-3502-CPU-Sim-Project-StartingPoint\\CpuScheduler\\CpuSchedulerForm.cs",
               "RelativeToolTip": "CpuScheduler\\CpuSchedulerForm.cs",
-              "ViewState": "AgIAAAQCAAAAAAAAAAArwOgBAABPAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAHkAAAALAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-19T23:28:31.756Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Algorithms.cs",
-              "DocumentMoniker": "C:\\Users\\atidw\\source\\repos\\CS-3502-CPU-Sim-Project-StartingPoint\\CpuScheduler\\Algorithms.cs",
-              "RelativeDocumentMoniker": "CpuScheduler\\Algorithms.cs",
-              "ToolTip": "C:\\Users\\atidw\\source\\repos\\CS-3502-CPU-Sim-Project-StartingPoint\\CpuScheduler\\Algorithms.cs",
-              "RelativeToolTip": "CpuScheduler\\Algorithms.cs",
-              "ViewState": "AgIAADEBAAAAAAAAAAAAwFMBAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-23T00:07:17.532Z",
               "EditorCaption": ""
             },
             {
@@ -70,7 +53,7 @@
               "RelativeDocumentMoniker": "CpuScheduler\\CpuSchedulerForm.Designer.cs",
               "ToolTip": "C:\\Users\\atidw\\source\\repos\\CS-3502-CPU-Sim-Project-StartingPoint\\CpuScheduler\\CpuSchedulerForm.Designer.cs",
               "RelativeToolTip": "CpuScheduler\\CpuSchedulerForm.Designer.cs",
-              "ViewState": "AgIAAKEBAAAAAAAAAAAowLUBAAAZAAAAAAAAAA==",
+              "ViewState": "AgIAAG0CAAAAAAAAAAAowFwAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-23T02:59:14.052Z",
               "EditorCaption": ""

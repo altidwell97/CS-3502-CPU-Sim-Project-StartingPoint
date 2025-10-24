@@ -107,6 +107,7 @@ namespace CpuScheduler
             sidePanel.Name = "sidePanel";
             sidePanel.Size = new System.Drawing.Size(10, 45);
             sidePanel.TabIndex = 4;
+            sidePanel.Controls.Add(saveResults);
             // 
             // label1
             // 
@@ -515,7 +516,6 @@ namespace CpuScheduler
             resultsPanel.Padding = new System.Windows.Forms.Padding(10);
             resultsPanel.Size = new System.Drawing.Size(728, 600);
             resultsPanel.TabIndex = 0;
-            resultsPanel.Controls.Add(saveResults);
             //
             // saveResults
             //

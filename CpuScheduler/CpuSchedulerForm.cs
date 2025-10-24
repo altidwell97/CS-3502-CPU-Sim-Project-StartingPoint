@@ -118,6 +118,8 @@ The main interface where you can:
   - SJF (Shortest Job First)
   - Priority Scheduling
   - Round Robin
+  - SRTF (Shortest Remaining Time First)
+  - Lottery
 • Run simulations and see immediate feedback
 
 📊 RESULTS
@@ -181,6 +183,20 @@ ROUND ROBIN (RR)
 • Good for time-sharing systems
 • Performance depends on quantum size
 
+SHORTEST TIME REMAING FIRST (SRTF)
+• Preemptive version of SJF
+• Selects process with shortest remaining time
+• Interrupts process if process arrives with shorter time
+• Minimizes average waiting time further than SJF
+• Requires knowledge of remaining execution times
+• Can lead to starvation for longer processes
+
+LOTTERY
+• Can be preemptive or non-preemptive
+• Each process has a number of tickets assigned to them
+• Amount of tickets decides the probability of being chosen at each step
+• Fairness can be adjusted by ticket distribution
+
 Learning Objectives:
 • Understand how different algorithms handle process scheduling
 • Compare algorithm performance and characteristics  
@@ -223,6 +239,7 @@ Instructions:
         {
             public string ProcessID { get; set; }
             public int BurstTime { get; set; }
+            public int RemainingTime { get; set; } = 0;
             public int Priority { get; set; }
             public int ArrivalTime { get; set; }
             public int InterruptTime { get; set; }
@@ -475,29 +492,41 @@ Instructions:
             {
                 // Get processes that have arrived by current time
                 var availableProcesses = remainingProcesses.Where(p => p.ArrivalTime <= currentTime).ToList();
-                var arrivalOrder = remainingProcesses.OrderBy(p=>p.ArrivalTime).ToList();
-
+                var arriveAfter = remainingProcesses.Where(p => p.ArrivalTime > currentTime).ToList();
+                
+               
                 if (availableProcesses.Count == 0)
                 {
                     // No process has arrived yet, jump to next arrival time
                     currentTime = remainingProcesses.Min(p => p.ArrivalTime);
                     continue;
                 }
-
                 // Select process with shortest burst time
-                var nextProcess = availableProcesses.OrderBy(p => p.BurstTime).ThenBy(p => p.ArrivalTime).First();
+                var nextProcess = availableProcesses.OrderBy(p => p.BurstTime).First();
+
                 var startTime = Math.Max(currentTime, nextProcess.ArrivalTime);
-                var finishTime = startTime + nextProcess.BurstTime;
-                if (remainingProcesses.Count > 2)
+                var finishTime = 0;
+                if (nextProcess.RemainingTime == 0)
                 {
-                    var processAfter = arrivalOrder.OrderBy(p => p.BurstTime).ThenBy(p => p.ArrivalTime).ElementAt(1);
+                    finishTime = startTime + nextProcess.BurstTime;
+                }
+                else
+                {
+                    finishTime = startTime + nextProcess.RemainingTime;
+                }
+
+                if (remainingProcesses.Count >= 2 && remainingProcesses.Count != availableProcesses.Count)
+                {
+                    
+                    var processAfter = arriveAfter.OrderBy(p => p.ArrivalTime).ThenBy(p => p.BurstTime).ElementAt(0);
+                    
                     if (finishTime > processAfter.ArrivalTime && processAfter.BurstTime < finishTime - processAfter.ArrivalTime)
                     {
                         remainingProcesses.Remove(nextProcess);
-                        nextProcess.BurstTime = finishTime - processAfter.ArrivalTime;
+                        nextProcess.RemainingTime = finishTime - processAfter.ArrivalTime;
                         nextProcess.Interrupted = true;
                         nextProcess.InterruptTime = processAfter.ArrivalTime;
-                        waitTimes[int.Parse(nextProcess.ProcessID.Substring(1)) - 1] = startTime - nextProcess.ArrivalTime;
+                        waitTimes[int.Parse(nextProcess.ProcessID.Substring(1)) - 1] += startTime - nextProcess.ArrivalTime;
                         remainingProcesses.Add(nextProcess);
                         currentTime = processAfter.ArrivalTime;
                         continue;
@@ -528,9 +557,8 @@ Instructions:
 
                 currentTime = finishTime;
                 remainingProcesses.Remove(nextProcess);
-                arrivalOrder.Remove(nextProcess);
+                arriveAfter.Remove(nextProcess);
             }
-
             return results.OrderBy(r => r.StartTime).ToList();
         }
 
@@ -647,6 +675,7 @@ Instructions:
             listView1.Columns.Add("Finish", 80, HorizontalAlignment.Center);
             listView1.Columns.Add("Waiting", 80, HorizontalAlignment.Center);
             listView1.Columns.Add("Turnaround", 90, HorizontalAlignment.Center);
+            
 
             // Add process results
             foreach (var result in results)
@@ -664,33 +693,29 @@ Instructions:
             // Add summary statistics
             var avgWaiting = results.Average(r => r.WaitingTime);
             var avgTurnaround = results.Average(r => r.TurnaroundTime);
+            double throughput = (double)results.Count() / (double)results.Last().FinishTime;
+            double cpuUtilization = (results.Sum(r => r.BurstTime) / (double)results.Last().FinishTime) * 100;
 
-            
+
             var summaryItem = new ListViewItem("SUMMARY");
             summaryItem.SubItems.Add(algorithmName);
-            summaryItem.SubItems.Add($"{results.Count} processes");
-            summaryItem.SubItems.Add($"Avg Wait: {avgWaiting:F1}");
-            summaryItem.SubItems.Add($"Avg Turn: {avgTurnaround:F1}");
-            summaryItem.SubItems.Add("");
-            summaryItem.SubItems.Add("");
-            listView1.Items.Add(summaryItem);
+            summaryItem.SubItems.Add("Processes");
+            summaryItem.SubItems.Add("Avg Wait");
+            summaryItem.SubItems.Add("Avg Turn");
+            summaryItem.SubItems.Add("Throughput");
+            summaryItem.SubItems.Add("CPU Utilization");
 
-            // TODO: STUDENTS - Add performance metrics calculation and display here
-            // Required metrics for your project report:
-            // 1. Average Waiting Time (AWT) - sum of all waiting times / number of processes
-            // 2. Average Turnaround Time (ATT) - sum of all turnaround times / number of processes  
-            // 3. CPU Utilization (%) - (total burst time / total time) * 100
-            // 4. Throughput (processes/second) - number of processes / total time
-            // 5. Response Time (RT) [Optional] - time from arrival to first execution
-            // Display these metrics in the results view for comparison between algorithms
-            
-            // TODO: STUDENTS - Add CSV export functionality for results data
-            // Create a "Export Results" button in the results panel to save:
-            // - Individual process results (what's shown in listView1)
-            // - Performance metrics summary for each algorithm tested
-            // Reference the SaveData_Click() method above to learn CSV file handling
-            // This will help you create tables/charts for your project report
+            var summaryItemVals = new ListViewItem("VALUES");
+            summaryItemVals.SubItems.Add("");
+            summaryItemVals.SubItems.Add($"{results.Count}");
+            summaryItemVals.SubItems.Add($"{avgWaiting:F1}");
+            summaryItemVals.SubItems.Add($"{avgTurnaround:F1}");
+            summaryItemVals.SubItems.Add($"{throughput:F2}");
+            summaryItemVals.SubItems.Add($"{cpuUtilization:F2}%");
+            listView1.Items.Add(summaryItem);
+            listView1.Items.Add(summaryItemVals);
         }
+        // Can not get the button to show up Work on if time
         private void SaveResults_Click(object sender, EventArgs e)
         {
             using (var saveDialog = new SaveFileDialog())
@@ -1267,7 +1292,7 @@ Instructions:
             ApplyRoundedCorners(btnSRTF);
             ApplyRoundedCorners(btnLottery);
             ApplyRoundedCorners(btnDarkModeToggle);
-            ApplyRoundedCorners(saveResults);
+            
             
             // Apply default dark theme
             ApplyTheme();
