@@ -10,11 +10,12 @@ The simulator is functional but still a work in progress. Currently the followin
 
 | Algorithm | Method | Notes |
 |-----------|--------|-------|
-| First Come First Serve | `Algorithms.RunFirstComeFirstServe` | Processes are executed in order of arrival. |
-| Shortest Job First | `Algorithms.RunShortestJobFirst` | Jobs are sorted by burst time before execution. |
-| Priority Scheduling | `Algorithms.RunPriorityScheduling` | User supplies a priority value for each job. |
-| Round Robin | `Algorithms.RunRoundRobin` | Requires a quantum time parameter. |
-
+| First Come First Serve | `CpuSchedulerForm.RunFCFSAlgorithm` | Processes are executed in order of arrival. |
+| Shortest Job First | `CpuSchedulerForm.RunSJFAlgorithm` | Jobs are sorted by burst time before execution. |
+| Priority Scheduling | `CpuSchedulerForm.RunPriorityAlgorithm` | User supplies a priority value for each job. |
+| Round Robin | `CpuSchedulerForm.RunRoundRobinAlgorithm` | Requires a quantum time parameter. |
+| Shortest Remaining Time First | `CpuSchedulerForm.RunSRTFAlgorithm` | Jobs are done shortest first and get interrupted if a shorter process arrives |
+| Lottery | `CpuSchedulerForm.RunLotteryAlgorithm` | Processes are given tickets to decide percet chance of getting scheduled |
 Additional algorithms can easily be added by extending `Algorithms.cs`.
 
 ## Requirements
